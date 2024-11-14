@@ -1,10 +1,13 @@
 import express from "express";
-import { createBook, deleteBook, getBookById, getBooks, updateBook } from "../controllers/book.controller";
+import { createBook, deleteBook, getBookById, getBooks, searchBooks, updateBook } from "../controllers/book.controller";
 import { createBookValidator, updateBookValidator } from "../utils/validators";
 import validateRequest from "../middlewares/validate-request";
 
 const router = express.Router();
 
+router.get("/search",
+    searchBooks
+)
 
 router.get("/:bookId",
     getBookById,

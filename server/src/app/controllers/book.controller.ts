@@ -2,8 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { BookService } from "../services/book.service";
 import { CustomError } from "../utils/custom-error";
 import mongoose from "mongoose";
+import { BOOK_INDEX, ElasticService } from "../services/elastic.service";
+import { elasticClient } from "../../config/elastic-search";
 
 const bookService = new BookService();
+const elasticService = new ElasticService();
 
 export const createBook = async (
   req: Request,
@@ -12,6 +15,9 @@ export const createBook = async (
 ) => {
   try {
     const newBook = await bookService.createBook(req.body);
+
+    await elasticService.indexBook(newBook);
+
     res.status(201).json({
       message: "Book created successfully",
       data: newBook,
@@ -34,8 +40,12 @@ export const updateBook = async (
     const book = await bookService.findBook(bookId);
     if (!book) {
       throw new CustomError("Book not found", 400);
+
     }
     const updatedBook = await bookService.updateBook(bookId, req.body);
+
+    await elasticService.updateBookIndex(bookId, updatedBook);
+
     res.status(200).json({
       message: "Book updated successfully",
       data: updatedBook,
@@ -58,7 +68,11 @@ export const deleteBook = async (
     if (!book) {
       throw new CustomError("Book not found", 400);
     }
+
     await bookService.deleteBook(bookId);
+
+    await elasticService.deleteBookIndex(bookId);
+
     res.status(200).json({
       message: "Book deleted successfully",
     });
@@ -105,3 +119,37 @@ export const getBookById = async (
     next(error);
   }
 };
+
+
+export const searchBooks = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { query } = req.query;
+        if(!query || query === ""){
+            throw new CustomError("Invalid search parameter", 400);
+        }
+      
+        const { hits } = await elasticClient.search({
+          index: BOOK_INDEX,
+          body: {
+            query: {
+              multi_match: {
+                query: query as string,
+                fields: ['title', 'author', 'description']
+              }
+            }
+          }
+        });
+      
+        // Extracting only the relevant parts from hits
+        const results = hits.hits.map(hit => hit._source);
+        console.log(results)
+      
+        res.status(200).json({success: true, data:  results});
+    } catch (error) {
+        next(error);
+    }
+  };
