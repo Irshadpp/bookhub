@@ -9,6 +9,9 @@ export class BookService implements IBookService {
   async findBook(id: string): Promise<BookDoc | null> {
     return await Book.findById(id);
   }
+  async findBooksByIsbn(isbn: string): Promise<BookDoc | null> {
+    return await Book.findOne({isbn:isbn})
+  }
   async updateBook(id: string, attrs: BookAttrs): Promise<BookDoc | null> {
     return Book.findByIdAndUpdate(id, { $set: attrs }, { new: true });
   }

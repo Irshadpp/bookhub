@@ -7,8 +7,7 @@ export default function HomePage() {
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const limit = 10; 
-
+  const limit = 8;
   useEffect(() => {
     const loadBooks = async () => {
       try {
@@ -32,7 +31,7 @@ export default function HomePage() {
 
   return (
     <div className="p-6">
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
         {books.map((book: any) => (
           <BookCard 
             key={book.id} 
@@ -53,17 +52,17 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: any) => {
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300"
       >
         Previous
       </button>
-      <span className="text-lg font-semibold">
+      <span className="text-lg font-semibold text-gray-700">
         Page {currentPage} of {totalPages}
       </span>
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-300"
       >
         Next
       </button>

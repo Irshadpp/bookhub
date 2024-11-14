@@ -14,6 +14,11 @@ export const createBook = async (
   next: NextFunction
 ) => {
   try {
+    const existingBook = await bookService.findBooksByIsbn(req.body.isbn);
+    if(existingBook){
+      throw new CustomError("Book already exists in this ISBN", 400);
+    }
+
     const newBook = await bookService.createBook(req.body);
 
     await elasticService.indexBook(newBook);
@@ -40,7 +45,11 @@ export const updateBook = async (
     const book = await bookService.findBook(bookId);
     if (!book) {
       throw new CustomError("Book not found", 400);
+    }
 
+    const existingBook = await bookService.findBooksByIsbn(req.body.isbn);
+    if(existingBook && existingBook.id !== bookId){
+      throw new CustomError("Book already exists in this ISBN", 400);
     }
     const updatedBook = await bookService.updateBook(bookId, req.body);
 
@@ -144,11 +153,27 @@ export const searchBooks = async (
         const { hits } = await elasticClient.search({
           index: BOOK_INDEX,
           body: {
-            size: 10,  
+            size: 10,
             query: {
-              multi_match: {
-                query: query as string,
-                fields: ['title', 'author']
+              bool: {
+                should: [
+                  {
+                    match_phrase_prefix: {
+                      title: {
+                        query: query as string,
+                        max_expansions: 10 
+                      }
+                    }
+                  },
+                  {
+                    match_phrase_prefix: {
+                      author: {
+                        query: query as string,
+                        max_expansions: 10
+                      }
+                    }
+                  }
+                ]
               }
             }
           }

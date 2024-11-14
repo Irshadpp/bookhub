@@ -17,9 +17,9 @@ const BookCard = ({ id, title, imageUrl }: BookCardProps) => {
   return (
     <div
       onClick={handleClick}
-      className="rounded-lg shadow-lg bg-white overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+      className="rounded-lg shadow-lg bg-white overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer transform hover:scale-105"
     >
-      <div className="h-48 w-full bg-gray-200 overflow-hidden">
+      <div className="h-96 w-full bg-gray-200 overflow-hidden">
         <img
           src={imageUrl}
           alt={title}

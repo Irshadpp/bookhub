@@ -1,11 +1,11 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { createBook } from '@/lib/api';
+import { fetchBookDetails, updateBook } from '@/lib/api'; // Assuming you have an API for fetching and updating books
 
 const bookSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
@@ -18,7 +18,7 @@ const bookSchema = z.object({
 
 type BookFormData = z.infer<typeof bookSchema>;
 
-export const CreateForm = () => {
+export const EditForm = ({ id }: { id: string }) => {
   const {
     register,
     handleSubmit,
@@ -26,34 +26,53 @@ export const CreateForm = () => {
     formState: { errors },
   } = useForm<BookFormData>({
     resolver: zodResolver(bookSchema),
-    // defaultValues,
   });
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [book, setBook] = useState<BookFormData | null>(null);
+
+  useEffect(() => {
+    const loadBookDetails = async () => {
+      try {
+        const response = await fetchBookDetails(id); // Fetch the book details by ID
+        setBook(response.data); // Set the fetched book details
+      } catch (error) {
+        console.error("Error fetching book details:", error);
+      }
+    };
+
+    loadBookDetails();
+  }, [id]);
+
+  // Set default values when book data is available
+  useEffect(() => {
+    if (book) {
+      setValue("title", book.title);
+      setValue("author", book.author);
+      setValue("publicationYear", book.publicationYear);
+      setValue("isbn", book.isbn || '');
+      setValue("description", book.description || '');
+      setValue("imageURL", book.imageURL || '');
+    }
+  }, [book, setValue]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Upload to Cloudinary
     setUploading(true);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
 
     try {
-        console.log(process.env.NEXT_PUBLIC_CLOUDINARY_NAME)
       const response = await axios.post(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`, formData);
       const imageUrl = response.data.secure_url;
       setValue("imageURL", imageUrl);
-    } catch (error: any) {
-        if (error.response) {
-            setError(error.response.data.error.message || "Failed to upload image.");
-          }else{
-            setError("Failed to upload image, try again later");
-          }
+    } catch (error) {
+      console.error("Image upload failed:", error);
     } finally {
       setUploading(false);
     }
@@ -63,14 +82,16 @@ export const CreateForm = () => {
     setError(null);
     setLoading(true);
     try {
-      await createBook(data);
-      router.push('/');
+      await updateBook(id, data); // Assuming you have an API method to update the book
+      router.push(`/${id}`);
     } catch (error: any) {
       setError(error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  if (!book) return <div>Loading...</div>;
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-2 max-w-lg p-6 rounded-lg shadow-md bg-gradient-to-br from-gray-50 to-gray-200">

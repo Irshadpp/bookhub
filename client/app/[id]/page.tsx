@@ -1,20 +1,85 @@
-// "use client"
+"use client";
+import { deleteBook, fetchBookDetails } from '@/lib/api';
+import { useRouter } from 'next/navigation';
+import { use, useEffect, useState } from 'react';
 
-// import { useRouter } from 'next/router';
+type BookDetailsPageProps = {
+  params: Promise<{ id: string }>; // Dynamic route param for the book ID
+};
 
-// const BookDetailPage = () => {
-//   const router = useRouter();
-//   const { id } = router.query;
+const BookDetailsPage = ({ params }: BookDetailsPageProps) => {
+  const [book, setBook] = useState<any>(null);
+  const router = useRouter();
 
-//   // Fetch book details from the API using the book ID
-//   // Display the details accordingly
+  const { id } = use(params)
 
-//   return (
-//     <div>
-//       <h1>Book Details for {id}</h1>
-//       {/* Add more book details here */}
-//     </div>
-//   );
-// };
+  useEffect(() => {
+    if (!id) return;    
+    const loadBookDetails = async () => {
+      try {
+        const response = await fetchBookDetails(id);
+        setBook(response.data);
+      } catch (error) {
+        console.error("Error fetching book details:", error);
+      }
+    };
 
-// export default BookDetailPage;
+    loadBookDetails();
+  }, [id]);
+
+  const handleEdit = () => {
+    router.push(`/edit/${id}`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteBook(id);
+      router.push('/');
+    } catch (error) {
+      console.error("Error deleting book:", error);
+    }
+  };
+
+  if (!book) return <div>Loading...</div>;
+
+  return (
+    <div className="max-w-4xl mx-auto p-2">
+      <div className="bg-white shadow-lg rounded-lg p-4 space-y-2">
+        {/* Book Image */}
+        <div className="flex justify-center">
+          <img
+            src={book.imageURL}
+            alt={book.title}
+            className="w-64 h-96 object-cover rounded-lg"
+          />
+        </div>
+
+        {/* Book Information */}
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-800">{book.title}</h1>
+          <p className="text-xl text-gray-600 mt-2">{book.author}</p>
+          <p className="text-md text-gray-500 mt-4">{book.description}</p>
+          <p className="text-md text-gray-500 mt-2">ISBN: {book.isbn}</p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-center space-x-4 mt-6">
+          <button
+            onClick={handleEdit}
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BookDetailsPage;

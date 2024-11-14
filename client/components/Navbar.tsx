@@ -40,8 +40,13 @@ const Navbar = () => {
   };
 
   const handleCreateBook = () => {
-    router.push('/create'); // Assuming this is the create book page route
+    router.push('/create');
   };
+
+  const handleSelectResult = (id: string) =>{
+    router.push(`/${id}`)
+    setSearchResults([]);
+  }
 
   return (
     <nav className="flex items-center justify-between p-4 bg-indigo-600 text-white shadow-md">
@@ -69,7 +74,7 @@ const Navbar = () => {
                 <div
                   key={index}
                   className="p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => router.push(`/books/${result.id}`)} // Navigate to book detail page
+                  onClick={() => handleSelectResult(result.id)} // Navigate to book detail page
                 >
                   {result.title} by {result.author}
                 </div>
