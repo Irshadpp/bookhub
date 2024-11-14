@@ -15,6 +15,9 @@ export class BookService implements IBookService{
             {new: true}
         )
     }
+    async deleteBook(id: string): Promise<void> {
+        await Book.findByIdAndDelete(id);
+    }
     async getAllBooks(): Promise<BookDoc[] | []>{
         return await Book.find();
     }

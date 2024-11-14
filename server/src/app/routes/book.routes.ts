@@ -1,5 +1,5 @@
 import express from "express";
-import { createBook, getBookById, getBooks, updateBook } from "../controllers/book.controller";
+import { createBook, deleteBook, getBookById, getBooks, updateBook } from "../controllers/book.controller";
 import { createBookValidator, updateBookValidator } from "../utils/validators";
 import validateRequest from "../middlewares/validate-request";
 
@@ -16,12 +16,15 @@ router.patch("/:bookId",
     updateBook
 );
 
+router.delete("/:bookId",
+    deleteBook
+)
+
 router.post("/",
     createBookValidator,
     validateRequest,
     createBook
 );
-
 
 router.get("/",
     getBooks

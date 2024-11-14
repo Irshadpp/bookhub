@@ -44,6 +44,28 @@ export const updateBook = async (
     next(error);
   }
 };
+export const deleteBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { bookId } = req.params;
+    if (!bookId) {
+      throw new CustomError("Book id not found", 400);
+    }
+    const book = await bookService.findBook(bookId);
+    if (!book) {
+      throw new CustomError("Book not found", 400);
+    }
+    await bookService.deleteBook(bookId);
+    res.status(200).json({
+      message: "Book deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getBooks = async (
   req: Request,
