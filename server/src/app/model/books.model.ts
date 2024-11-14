@@ -6,6 +6,7 @@ export interface BookAttrs{
     publicationYear: number;
     isbn: string;
     description: string;
+    // imageURL: string;
 }
 
 export interface BookDoc extends mongoose.Document{
