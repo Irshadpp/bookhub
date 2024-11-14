@@ -6,4 +6,16 @@ export class BookService implements IBookService{
     async createBook(attrs: BookAttrs): Promise<BookDoc> {
         return await Book.build(attrs).save();
     }
+    async findBook(id: string): Promise<BookDoc | null> {
+        return await Book.findById(id);
+    }
+    async updateBook(id: string, attrs: BookAttrs): Promise<BookDoc | null> {
+        return Book.findByIdAndUpdate(id,
+            {$set: attrs},
+            {new: true}
+        )
+    }
+    async getAllBooks(): Promise<BookDoc[] | []>{
+        return await Book.find();
+    }
 }
