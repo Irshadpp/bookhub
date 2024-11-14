@@ -28,6 +28,12 @@ export const createBookValidator = [
     .withMessage("Description must be a valid")
     .notEmpty()
     .withMessage("Description is required"),
+    body("imageURL")
+    .trim()
+    .isString()
+    .withMessage("image url must be a valid")
+    .notEmpty()
+    .withMessage("image is required"),
 ];
 
 export const updateBookValidator = [
@@ -63,4 +69,11 @@ export const updateBookValidator = [
     .withMessage("Description must be a valid")
     .notEmpty()
     .withMessage("Description is required"),
+    body("imageURL")
+    .optional()
+    .trim()
+    .isString()
+    .withMessage("image url must be a valid")
+    .notEmpty()
+    .withMessage("image is required"),
 ];

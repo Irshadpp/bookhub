@@ -6,7 +6,7 @@ export interface IBookService{
     updateBook(id: string, attrs: BookAttrs): Promise<BookDoc | null>;
     deleteBook(id: string): Promise<void>;
     getAllBooks(page: number, limit: number): Promise<{
-        data: BookDoc[];
+        books: BookDoc[];
         totalBooks: number;
         totalPages: number;
       }>;

@@ -6,7 +6,7 @@ export interface BookAttrs{
     publicationYear: number;
     isbn: string;
     description: string;
-    // imageURL: string;
+    imageURL: string;
 }
 
 export interface BookDoc extends mongoose.Document{
@@ -16,6 +16,7 @@ export interface BookDoc extends mongoose.Document{
     publicationYear: number;
     isbn: string;
     description: string;
+    imageURL: string;
 }
 
 export interface BookModel extends mongoose.Model<BookDoc>{

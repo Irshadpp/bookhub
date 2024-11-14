@@ -92,14 +92,14 @@ export const getBooks = async (
     const limit = parseInt(req.query.limit as string) || 10;
     
     // Get paginated results
-    const books = await bookService.getAllBooks(page, limit);
+    const bookData = await bookService.getAllBooks(page, limit);
 
     res.status(200).json({
         message: "Books fetched successfully",
-        data: books.data,
-        totalBooks: books.totalBooks,
-        totalPages: books.totalPages,
-        currentPage: page,
+        data: {
+          ...bookData,
+          currentPage: page,
+        },
     });
   } catch (error) {
     next(error);
@@ -140,15 +140,11 @@ export const searchBooks = async (
         if(!query || query === ""){
             throw new CustomError("Invalid search parameter", 400);
         }
-
-        const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 10;
       
         const { hits } = await elasticClient.search({
           index: BOOK_INDEX,
           body: {
-            from: (page - 1) * limit,
-            size: limit,  
+            size: 10,  
             query: {
               multi_match: {
                 query: query as string,
@@ -160,16 +156,10 @@ export const searchBooks = async (
       
         // Extracting only the relevant parts from hits
         const results = hits.hits.map(hit => hit._source);
-        
-        const totalResults = typeof hits.total === 'number' ? hits.total : hits.total!.value;
-        const totalPages = Math.ceil(totalResults / limit);
     
         res.status(200).json({
           success: true,
           data: results,
-          totalResults,
-          totalPages,
-          currentPage: page,
         });
     } catch (error) {
         next(error);

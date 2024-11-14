@@ -26,6 +26,10 @@ const bookSchema = new mongoose.Schema(
       trim: true,
       maxlength: 2000,
     },
+    imageURL: {
+      type: String,
+      required: true,
+    }
   },
   {
     toJSON: {

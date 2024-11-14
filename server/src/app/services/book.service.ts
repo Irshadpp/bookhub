@@ -19,7 +19,7 @@ export class BookService implements IBookService {
     page: number,
     limit: number
   ): Promise<{
-    data: BookDoc[];
+    books: BookDoc[];
     totalBooks: number;
     totalPages: number;
   }> {
@@ -32,7 +32,7 @@ export class BookService implements IBookService {
       .limit(limit); 
 
     return {
-      data: books,
+      books,
       totalBooks,
       totalPages,
     };
