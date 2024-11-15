@@ -51,7 +51,9 @@ const BookDetailsPage = ({ params }: BookDetailsPageProps) => {
           <Image
             src={book.imageURL}
             alt={book.title}
-            className="w-64 h-96 object-cover rounded-lg"
+            width={256}
+            height={384}
+            className="object-cover rounded-lg"
           />
         </div>
 
