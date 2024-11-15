@@ -49,49 +49,50 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-indigo-600 text-white shadow-md">
-      {/* Logo */}
-      <div className="text-xl font-semibold cursor-pointer" onClick={() => router.push('/')}>
-        BookHub
-      </div>
-
-      {/* Search Bar */}
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Search books..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="p-2 pl-3 w-64 text-black rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-        />
-        {/* Show results in a dropdown if any */}
-        {searchResults.length > 0 && (
-          <div className="absolute top-12 left-0 w-full bg-white text-black rounded-md shadow-lg overflow-hidden z-10">
-            {isSearching ? (
-              <p className="p-2 text-center text-gray-500">Searching...</p>
-            ) : (
-              searchResults.map((result, index) => (
-                <div
-                  key={index}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleSelectResult(result.id)} // Navigate to book detail page
-                >
-                  {result.title} by {result.author}
-                </div>
-              ))
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Create Book Button */}
-      <button
-        onClick={handleCreateBook}
-        className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md"
-      >
-        Create Book
-      </button>
-    </nav>
+    <nav className="fixed top-0 left-0 w-full flex items-center justify-between p-4 bg-indigo-600 text-white shadow-md z-50">
+    {/* Logo */}
+    <div className="text-xl font-semibold cursor-pointer" onClick={() => router.push('/')}>
+      BookHub
+    </div>
+  
+    {/* Search Bar */}
+    <div className="relative">
+      <input
+        type="text"
+        placeholder="Search books..."
+        value={searchQuery}
+        onChange={handleSearchChange}
+        className="p-2 pl-3 w-64 text-black rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+      />
+      {/* Show results in a dropdown if any */}
+      {searchResults.length > 0 && (
+        <div className="absolute top-12 left-0 w-full bg-white text-black rounded-md shadow-lg overflow-hidden z-10">
+          {isSearching ? (
+            <p className="p-2 text-center text-gray-500">Searching...</p>
+          ) : (
+            searchResults.map((result, index) => (
+              <div
+                key={index}
+                className="p-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => handleSelectResult(result.id)} // Navigate to book detail page
+              >
+                {result.title} by {result.author}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  
+    {/* Create Book Button */}
+    <button
+      onClick={handleCreateBook}
+      className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-md"
+    >
+      Create Book
+    </button>
+  </nav>
+  
   );
 };
 

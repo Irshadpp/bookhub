@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { fetchBookDetails, updateBook } from '@/lib/api'; // Assuming you have an API for fetching and updating books
+import { toast } from 'react-toastify';
 
 const bookSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
@@ -83,6 +84,7 @@ export const EditForm = ({ id }: { id: string }) => {
     setLoading(true);
     try {
       await updateBook(id, data); // Assuming you have an API method to update the book
+      toast.success("Book edited successfully!");
       router.push(`/${id}`);
     } catch (error: any) {
       setError(error.message);

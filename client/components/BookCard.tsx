@@ -24,8 +24,8 @@ const BookCard = ({ id, title, imageUrl }: BookCardProps) => {
       <Image
         src={imageUrl}
         alt={title}
-        layout="fill" // Makes the image fill the parent container
-        objectFit="cover" // Ensures the image covers the container while maintaining its aspect ratio
+        layout="fill" 
+        objectFit="cover"
         className="rounded-t-lg"
       />
     </div>

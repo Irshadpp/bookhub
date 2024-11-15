@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { createBook } from '@/lib/api';
+import { toast } from 'react-toastify';
 
 const bookSchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
@@ -64,6 +65,7 @@ export const CreateForm = () => {
     setLoading(true);
     try {
       await createBook(data);
+      toast.success("Book created successfully!");
       router.push('/');
     } catch (error: any) {
       setError(error.message);

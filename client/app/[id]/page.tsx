@@ -3,6 +3,7 @@ import { deleteBook, fetchBookDetails } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 import Image from 'next/image';
+import Swal from 'sweetalert2';
 
 type BookDetailsPageProps = {
   params: Promise<{ id: string }>; // Dynamic route param for the book ID
@@ -34,10 +35,24 @@ const BookDetailsPage = ({ params }: BookDetailsPageProps) => {
 
   const handleDelete = async () => {
     try {
-      await deleteBook(id);
-      router.push('/');
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+      });
+  
+      if (result.isConfirmed) {
+        await deleteBook(id);
+        await Swal.fire('Deleted!', 'The book has been deleted.', 'success');
+        router.push('/');
+      }
     } catch (error) {
       console.error("Error deleting book:", error);
+      Swal.fire('Error', 'There was an issue deleting the book.', 'error');
     }
   };
 
