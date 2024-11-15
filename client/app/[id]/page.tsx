@@ -2,6 +2,7 @@
 import { deleteBook, fetchBookDetails } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
+import Image from 'next/image';
 
 type BookDetailsPageProps = {
   params: Promise<{ id: string }>; // Dynamic route param for the book ID
@@ -47,7 +48,7 @@ const BookDetailsPage = ({ params }: BookDetailsPageProps) => {
       <div className="bg-white shadow-lg rounded-lg p-4 space-y-2">
         {/* Book Image */}
         <div className="flex justify-center">
-          <img
+          <Image
             src={book.imageURL}
             alt={book.title}
             className="w-64 h-96 object-cover rounded-lg"

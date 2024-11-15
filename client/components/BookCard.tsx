@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 type BookCardProps = {
   id: string;
   title: string;
@@ -20,7 +21,7 @@ const BookCard = ({ id, title, imageUrl }: BookCardProps) => {
       className="rounded-lg shadow-lg bg-white overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer transform hover:scale-105"
     >
       <div className="h-96 w-full bg-gray-200 overflow-hidden">
-        <img
+        <Image
           src={imageUrl}
           alt={title}
           className="object-cover w-full h-full"
